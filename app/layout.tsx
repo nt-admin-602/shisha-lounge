@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Serif_JP, Hina_Mincho } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Serif_JP, DotGothic16 } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,9 +18,8 @@ const notoSerifJP = Noto_Serif_JP({
   weight: "400",
 });
 
-const hinaMincho = Hina_Mincho({
-  variable: "--font-hina-mincho",
-  subsets: ["latin"],
+const dotGothic16 = DotGothic16({
+  variable: "--font-dot-gothic-16",
   weight: "400",
 });
 
@@ -37,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSerifJP.variable} ${hinaMincho.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSerifJP.variable} ${dotGothic16.variable} antialiased`}
       >
         {children}
       </body>

@@ -3,7 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-sans: var(--font-hina-mincho);
+  --font-sans: var(--font-dot-gothic-16);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -22,7 +22,7 @@ body {
 
 /* Fantasy font for specific Japanese text */
 .fantasy-font {
-  font-family: var(--font-hina-mincho), serif;
+  font-family: var(--font-dot-gothic-16), sans-serif;
 }
 
 /* Custom glow effects for menu items */
