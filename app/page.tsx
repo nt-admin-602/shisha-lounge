@@ -1,6 +1,9 @@
+"use client";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Home() {
+  const [view, setView] = useState<"menu" | "calendar" | "blog" | null>(null);
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-slate-50">
       {/* 背景 */}
@@ -32,7 +35,7 @@ export default function Home() {
               label: "開店日カレンダー",
               color: "bg-slate-900/55 ring-emerald-300/70 text-slate-50",
               offset: "sm:ml-10",  // ← 前回方向 + ずれ量UP
-              glowClass: "calendar-glow",
+              glowClass: "menu-glow",
             },
             {
               href: "/reserve",
@@ -40,7 +43,7 @@ export default function Home() {
               label: "席のご予約",
               color: "bg-slate-900/55 ring-emerald-300 text-slate-50",
               offset: "sm:ml-20", // ← さらに右へ
-              glowClass: "reserve-glow",
+              glowClass: "menu-glow",
             },
             {
               href: "/blog",
@@ -48,19 +51,24 @@ export default function Home() {
               label: "ブログ / お知らせ",
               color: "bg-slate-900/55 ring-fuchsia-400/70 text-slate-50",
               offset: "sm:ml-30", // ← 一番右へ
-              glowClass: "blog-glow",
+              glowClass: "menu-glow",
             },
           ].map((item) => (
-            <a
+            <button
               key={item.href}
-              href={item.href}
-              className={`group relative block w-[330px] sm:w-[440px] ${item.offset}`}
+              onClick={() => {
+                if (item.href === "/menu") setView("menu");
+                else if (item.href === "/calendar") setView("calendar");
+                else if (item.href === "/blog") setView("blog");
+                // reserveはまだない
+              }}
+              className={`group relative block w-82.5 sm:w-110 ${item.offset} cursor-pointer text-left z-10`}
             >
               <div
                 className={`
                   flex items-center justify-between px-6 py-5 font-medium fantasy-font
                   backdrop-blur-sm ring-1 transition
-                  group-hover:bg-slate-900/90 group-hover:ring-slate-300
+                  group-hover:bg-emerald-900/90 group-hover:ring-slate-300
                   ${item.color}
                   ${item.glowClass}
                 `}
@@ -75,30 +83,61 @@ export default function Home() {
                   </span>
                   <span className="text-lg">{item.label}</span>
                 </div>
-
-                <span className="ml-4 text-2xl transition group-hover:translate-x-0.5 group-hover:opacity-85">
-                  {item.icon}
-                </span>
               </div>
-            </a>
+            </button>
           ))}
         </div>
       </nav>
 
 
-      {/* 右側テキスト */}
+      {/* 右側テキスト / メニュー */}
       <section className="absolute inset-0 flex items-center justify-end px-6">
-        <div className="ml-64 max-w-xl space-y-3 text-right drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)]">
-          <p className="text-[0.7rem] uppercase tracking-[0.25em] text-slate-200">
-            OTHERWORLDLY SHISHA LOUNGE
-          </p>
-          <h1 className="text-2xl font-semibold md:text-3xl leading-snug fantasy-font">
-            異形頭水煙館
-          </h1>
-          <p className="text-xs md:text-sm text-slate-100">
-            説明文
-          </p>
-        </div>
+        {view === null ? (
+          <div className="ml-64 max-w-xl space-y-3 text-right drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)]">
+            <p className="text-[0.7rem] uppercase tracking-[0.25em] text-slate-200">
+              OTHERWORLDLY SHISHA LOUNGE
+            </p>
+            <h1 className="text-2xl font-semibold md:text-3xl leading-snug fantasy-font">
+              異形頭水煙館
+            </h1>
+            <p className="text-xs md:text-sm text-slate-100">
+              説明文
+            </p>
+          </div>
+        ) : view === "menu" ? (
+          <div className="ml-64 max-w-xl space-y-3 text-right drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)] bg-slate-900/80 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">SHISHA / DRINK MENU</h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold">Shisha Flavors</h3>
+                <ul className="text-sm space-y-1">
+                  <li>Apple - ¥500</li>
+                  <li>Grape - ¥500</li>
+                  <li>Mint - ¥500</li>
+                  <li>Mixed Berry - ¥600</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Drinks</h3>
+                <ul className="text-sm space-y-1">
+                  <li>Cola - ¥300</li>
+                  <li>Orange Juice - ¥400</li>
+                  <li>Water - ¥200</li>
+                </ul>
+              </div>
+            </div>
+            <button
+              onClick={() => setView(null)}
+              className="mt-4 px-4 py-2 bg-slate-700 rounded"
+            >
+              閉じる
+            </button>
+          </div>
+        ) : (
+          <div className="ml-64 max-w-xl space-y-3 text-right drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)]">
+            <p>他のコンテンツ（{view}）</p>
+          </div>
+        )}
       </section>
 
       {/* 下のロゴ */}
@@ -111,6 +150,22 @@ export default function Home() {
           className="object-contain drop-shadow-lg"
         />
       </header>
+
+      {/* メニュー表示 */}
+      {view && view !== "menu" && (
+        <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10">
+          <div className="bg-slate-900 p-8 rounded-lg max-w-md w-full mx-4">
+            <h2 className="text-2xl font-bold mb-4">{view === "calendar" ? "カレンダー" : "ブログ"}</h2>
+            <p>ここに{view}内容を表示します。</p>
+            <button
+              onClick={() => setView(null)}
+              className="mt-4 px-4 py-2 bg-slate-700 rounded"
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
