@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 export default function Home() {
-  const [view, setView] = useState<"menu" | "calendar" | "blog" | null>(null);
+  const [view, setView] = useState<"menu" | "calendar" | "blog" | "reserve" | null>(null);
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-slate-50">
       {/* 背景 */}
@@ -60,15 +60,15 @@ export default function Home() {
                 if (item.href === "/menu") setView("menu");
                 else if (item.href === "/calendar") setView("calendar");
                 else if (item.href === "/blog") setView("blog");
-                // reserveはまだない
+                else if (item.href === "/reserve") setView("reserve");
               }}
-              className={`group relative block w-82.5 sm:w-110 ${item.offset} cursor-pointer text-left z-10`}
+              className={`group relative block w-82.5 sm:w-110 ${item.offset} cursor-pointer text-left z-10 transition-all hover:drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]`}
             >
               <div
                 className={`
                   flex items-center justify-between px-6 py-5 font-medium fantasy-font
-                  backdrop-blur-sm ring-1 transition
-                  group-hover:bg-emerald-900/90 group-hover:ring-slate-300
+                  backdrop-blur-sm ring-1 transition-all
+                  group-hover:bg-emerald-900/30
                   ${item.color}
                   ${item.glowClass}
                 `}
@@ -91,7 +91,8 @@ export default function Home() {
 
 
       {/* 右側テキスト / メニュー */}
-      <section className="absolute inset-0 flex items-center justify-end px-6">
+      <section className="absolute inset-0 flex items-center justify-end px-6 pointer-events-none z-20">
+        <div className="pointer-events-auto">
         {view === null ? (
           <div className="ml-64 max-w-xl space-y-3 text-right drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)]">
             <p className="text-[0.7rem] uppercase tracking-[0.25em] text-slate-200">
@@ -128,7 +129,98 @@ export default function Home() {
             </div>
             <button
               onClick={() => setView(null)}
-              className="mt-4 px-4 py-2 bg-slate-700 rounded"
+              className="mt-4 px-4 py-2 bg-slate-700 rounded hover:bg-emerald-900/30 hover:drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] transition-all"
+            >
+              閉じる
+            </button>
+          </div>
+        ) : view === "calendar" ? (
+          <div className="ml-64 max-w-xl space-y-3 text-right drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)] bg-slate-900/80 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">OPEN DAYS CALENDAR</h2>
+            <div className="space-y-4">
+              <div className="grid grid-cols-7 gap-2 text-center text-sm">
+                <div className="font-semibold">日</div>
+                <div className="font-semibold">月</div>
+                <div className="font-semibold">火</div>
+                <div className="font-semibold">水</div>
+                <div className="font-semibold">木</div>
+                <div className="font-semibold">金</div>
+                <div className="font-semibold">土</div>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].map((day) => (
+                  <div key={day} className={`p-2 rounded ${day % 7 === 0 || day % 7 === 1 ? 'bg-emerald-700/50' : 'bg-slate-700/50'}`}>
+                    {day}
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-emerald-300">※緑色の日は営業日です</p>
+            </div>
+            <button
+              onClick={() => setView(null)}
+              className="mt-4 px-4 py-2 bg-slate-700 rounded hover:bg-emerald-900/30 hover:drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] transition-all"
+            >
+              閉じる
+            </button>
+          </div>
+        ) : view === "blog" ? (
+          <div className="ml-64 max-w-xl space-y-3 text-right drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)] bg-slate-900/80 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">DIARY / NEWS</h2>
+            <div className="space-y-4 text-left">
+              <div className="border-b border-slate-700 pb-3">
+                <p className="text-xs text-slate-400">2025/12/30</p>
+                <h3 className="text-lg font-semibold">新しいフレーバー入荷</h3>
+                <p className="text-sm">人気のミックスベリーフレーバーが再入荷しました。</p>
+              </div>
+              <div className="border-b border-slate-700 pb-3">
+                <p className="text-xs text-slate-400">2025/12/25</p>
+                <h3 className="text-lg font-semibold">年末年始の営業について</h3>
+                <p className="text-sm">12/31-1/3は休業いたします。</p>
+              </div>
+              <div className="border-b border-slate-700 pb-3">
+                <p className="text-xs text-slate-400">2025/12/20</p>
+                <h3 className="text-lg font-semibold">新メニュー追加</h3>
+                <p className="text-sm">冬限定のホットドリンクメニューを追加しました。</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setView(null)}
+              className="mt-4 px-4 py-2 bg-slate-700 rounded hover:bg-emerald-900/30 hover:drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] transition-all"
+            >
+              閉じる
+            </button>
+          </div>
+        ) : view === "reserve" ? (
+          <div className="ml-64 max-w-xl space-y-3 text-right drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)] bg-slate-900/80 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">SEAT RESERVATION</h2>
+            <div className="space-y-4 text-left">
+              <div>
+                <label className="block text-sm font-semibold mb-1">お名前</label>
+                <input type="text" className="w-full bg-slate-800 p-2 rounded" placeholder="山田太郎" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">電話番号</label>
+                <input type="tel" className="w-full bg-slate-800 p-2 rounded" placeholder="090-1234-5678" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">希望日時</label>
+                <input type="datetime-local" className="w-full bg-slate-800 p-2 rounded" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">人数</label>
+                <select className="w-full bg-slate-800 p-2 rounded">
+                  <option>1名</option>
+                  <option>2名</option>
+                  <option>3名</option>
+                  <option>4名</option>
+                  <option>5名以上</option>
+                </select>
+              </div>
+              <button className="w-full px-4 py-2 bg-emerald-700 rounded hover:bg-emerald-600">
+                予約する
+              </button>
+            </div>
+            <button
+              onClick={() => setView(null)}
+              className="mt-4 px-4 py-2 bg-slate-700 rounded hover:bg-emerald-900/30 hover:drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] transition-all"
             >
               閉じる
             </button>
@@ -138,6 +230,7 @@ export default function Home() {
             <p>他のコンテンツ（{view}）</p>
           </div>
         )}
+        </div>
       </section>
 
       {/* 下のロゴ */}
@@ -151,21 +244,7 @@ export default function Home() {
         />
       </header>
 
-      {/* メニュー表示 */}
-      {view && view !== "menu" && (
-        <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10">
-          <div className="bg-slate-900 p-8 rounded-lg max-w-md w-full mx-4">
-            <h2 className="text-2xl font-bold mb-4">{view === "calendar" ? "カレンダー" : "ブログ"}</h2>
-            <p>ここに{view}内容を表示します。</p>
-            <button
-              onClick={() => setView(null)}
-              className="mt-4 px-4 py-2 bg-slate-700 rounded"
-            >
-              閉じる
-            </button>
-          </div>
-        </div>
-      )}
+
     </main>
   );
 }
