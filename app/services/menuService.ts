@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { Category, MenuItem, MenuItemWithCategory } from '../types/models';
+import { Category, MenuItem } from '../models';
 
 export async function getCategories(): Promise<Category[]> {
   const { data, error } = await supabase
@@ -12,13 +12,11 @@ export async function getCategories(): Promise<Category[]> {
     return [];
   }
 
-  return data || [];
+  // DBの生データをドメインモデルに変換
+  return data?.map(Category.fromDB) || [];
 }
 
-export async function getMenuItems(): Promise<MenuItemWithCategory[]> {
-  console.log('Fetching menu items...');
-  
-  // まずはシンプルに取得してみる
+export async function getMenuItems(): Promise<MenuItem[]> {
   const { data, error } = await supabase
     .from('menu_items')
     .select('*')
@@ -27,19 +25,11 @@ export async function getMenuItems(): Promise<MenuItemWithCategory[]> {
 
   if (error) {
     console.error('Error fetching menu items:', error);
-    console.error('Error details:', {
-      message: error.message,
-      details: error.details,
-      hint: error.hint,
-      code: error.code
-    });
-    console.error('Error stringified:', JSON.stringify(error, null, 2));
-    console.error('Error keys:', Object.keys(error));
     return [];
   }
 
-  console.log('Menu items fetched successfully:', data);
-  return data as any || [];
+  // DBの生データをドメインモデルに変換
+  return data?.map(MenuItem.fromDB) || [];
 }
 
 export async function getMenuItemsByCategory(categoryId: number): Promise<MenuItem[]> {
@@ -55,5 +45,6 @@ export async function getMenuItemsByCategory(categoryId: number): Promise<MenuIt
     return [];
   }
 
-  return data || [];
+  // DBの生データをドメインモデルに変換
+  return data?.map(MenuItem.fromDB) || [];
 }

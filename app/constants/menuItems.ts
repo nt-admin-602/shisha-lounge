@@ -1,6 +1,6 @@
-import { MenuItem } from "../types";
+import { MenuButtonItem } from "../types";
 
-export const MENU_ITEMS: MenuItem[] = [
+export const MENU_ITEMS: MenuButtonItem[] = [
   {
     href: "/menu",
     title: "SHISHA / DRINK",

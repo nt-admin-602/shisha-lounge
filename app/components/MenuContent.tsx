@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { getCategories, getMenuItems } from '../services/menuService';
-import { Category, MenuItemWithCategory } from '../types/models';
+import { Category, MenuItem } from '../models';
 
 interface MenuContentProps {
   onClose: () => void;
@@ -9,7 +9,7 @@ interface MenuContentProps {
 
 export default function MenuContent({ onClose }: MenuContentProps) {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [menuItems, setMenuItems] = useState<MenuItemWithCategory[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function MenuContent({ onClose }: MenuContentProps) {
   }, []);
 
   const getItemsByCategory = (categoryId: number) => {
-    return menuItems.filter(item => item.category_id === categoryId);
+    return menuItems.filter(item => item.categoryId === categoryId);
   };
 
   return (
@@ -48,17 +48,17 @@ export default function MenuContent({ onClose }: MenuContentProps) {
             const items = getItemsByCategory(category.id);
             return (
               <div key={category.id}>
-                <h3 className="text-lg font-semibold">{category.name}</h3>
+                <h3 className="text-lg font-semibold">{category.getDisplayName()}</h3>
                 <ul className="text-sm space-y-1">
                   {items.length === 0 ? (
                     <li className="text-slate-400">商品がありません</li>
                   ) : (
                     items.map((item) => (
                       <li key={item.id}>
-                        {item.name} - ¥{item.base_price.toLocaleString()}
-                        {item.display_note && (
+                        {item.name} - {item.getFormattedPrice()}
+                        {item.hasNote() && (
                           <span className="text-slate-400 text-xs ml-2">
-                            ({item.display_note})
+                            ({item.getNote()})
                           </span>
                         )}
                       </li>

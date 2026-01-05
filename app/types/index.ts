@@ -1,6 +1,6 @@
 export type ViewType = "menu" | "calendar" | "blog" | "reserve" | null;
 
-export interface MenuItem {
+export interface MenuButtonItem {
   href: string;
   title: string;
   label: string;
