@@ -1,7 +1,15 @@
-import { MenuItem } from "../types";
+/**
+ * メニューボタンコンポーネント
+ * 
+ * 目的:
+ * - 左側のナビゲーションボタンを表示
+ * - 平行四辺形デザインとホバーエフェクトを実装
+ * - クリック時に対応するコンテンツを表示させる
+ */
+import { MenuButtonItem } from "../types";
 
 interface MenuButtonProps {
-  item: MenuItem;
+  item: MenuButtonItem;
   onClick: () => void;
 }
 

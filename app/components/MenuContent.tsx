@@ -1,3 +1,11 @@
+/**
+ * メニュー表示コンポーネント
+ * 
+ * 目的:
+ * - シーシャフレーバー・ドリンク等のメニューをカテゴリ別に表示
+ * - Supabaseからメニューデータを取得し、ユーザーに見やすく提示
+ * - ローディング状態やエラー状態を適切に表示
+ */
 "use client";
 import { useEffect, useState } from 'react';
 import { getCategories, getMenuItems } from '../services/menuService';
@@ -12,6 +20,8 @@ export default function MenuContent({ onClose }: MenuContentProps) {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // コンポーネント初回表示時にメニューデータを取得
+  // 目的: ユーザーがメニューボタンをクリックした時点で最新のメニューを表示
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -26,6 +36,11 @@ export default function MenuContent({ onClose }: MenuContentProps) {
     fetchData();
   }, []);
 
+  /**
+   * カテゴリIDに基づいてメニューアイテムをフィルタリング
+   * 
+   * 目的: 各カテゴリに属する商品だけを抽出して表示（カテゴリ別の表示を実現）
+   */
   const getItemsByCategory = (categoryId: number) => {
     return menuItems.filter(item => item.categoryId === categoryId);
   };

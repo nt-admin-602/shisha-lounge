@@ -1,3 +1,11 @@
+/**
+ * メニューボタン設定定数
+ * 
+ * 目的:
+ * - 左側のナビゲーションボタンの設定を一箇所で管理
+ * - 新しいページの追加や順序変更を容易にする
+ * - デザイン（色、オフセット、光沢効果）を統一管理
+ */
 import { MenuButtonItem } from "../types";
 
 export const MENU_ITEMS: MenuButtonItem[] = [
