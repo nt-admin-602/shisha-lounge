@@ -1,30 +1,76 @@
+"use client";
+import { useEffect, useState } from 'react';
+import { getCategories, getMenuItems } from '../services/menuService';
+import { Category, MenuItemWithCategory } from '../types/models';
+
 interface MenuContentProps {
   onClose: () => void;
 }
 
 export default function MenuContent({ onClose }: MenuContentProps) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItemWithCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      const [categoriesData, menuItemsData] = await Promise.all([
+        getCategories(),
+        getMenuItems(),
+      ]);
+      setCategories(categoriesData);
+      setMenuItems(menuItemsData);
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  const getItemsByCategory = (categoryId: number) => {
+    return menuItems.filter(item => item.category_id === categoryId);
+  };
+
   return (
     <div className="ml-64 max-w-xl space-y-3 text-right drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)] bg-slate-900/80 p-6 rounded-lg">
       <h2 className="text-2xl font-bold mb-4">SHISHA / DRINK MENU</h2>
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold">Shisha Flavors</h3>
-          <ul className="text-sm space-y-1">
-            <li>Apple - ¥500</li>
-            <li>Grape - ¥500</li>
-            <li>Mint - ¥500</li>
-            <li>Mixed Berry - ¥600</li>
-          </ul>
+      
+      {loading ? (
+        <div className="text-center py-8">
+          <p className="text-slate-400">読み込み中...</p>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold">Drinks</h3>
-          <ul className="text-sm space-y-1">
-            <li>Cola - ¥300</li>
-            <li>Orange Juice - ¥400</li>
-            <li>Water - ¥200</li>
-          </ul>
+      ) : categories.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-slate-400">メニューが登録されていません</p>
         </div>
-      </div>
+      ) : (
+        <div className="space-y-4">
+          {categories.map((category) => {
+            const items = getItemsByCategory(category.id);
+            return (
+              <div key={category.id}>
+                <h3 className="text-lg font-semibold">{category.name}</h3>
+                <ul className="text-sm space-y-1">
+                  {items.length === 0 ? (
+                    <li className="text-slate-400">商品がありません</li>
+                  ) : (
+                    items.map((item) => (
+                      <li key={item.id}>
+                        {item.name} - ¥{item.base_price.toLocaleString()}
+                        {item.display_note && (
+                          <span className="text-slate-400 text-xs ml-2">
+                            ({item.display_note})
+                          </span>
+                        )}
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      
       <button
         onClick={onClose}
         className="mt-4 px-4 py-2 bg-slate-700 rounded hover:bg-emerald-900/30 hover:drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] transition-all"
